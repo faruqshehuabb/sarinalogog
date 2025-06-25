@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sarina Creatives – AI Logo Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: #4f46e5;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .hero {
+      padding: 5rem 2rem;
+      text-align: center;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #222;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      color: #555;
+    }
+
+    .name-form {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .name-form input {
+      padding: 1rem;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .name-form button {
+      background: #4f46e5;
+      color: white;
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .ai-statement {
+      margin-top: 1rem;
+      color: #777;
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+
+    footer {
+      padding: 2rem;
+      background: #f9f9f9;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Sarina Creatives</div>
+    <nav>
+      <ul>
+        <li><a href="showcase.html">Showcase</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Design Your Brand with AI-Powered Creativity</h1>
+    <p>Empowering small businesses to create stunning, professional logos — completely free.</p>
+    <p> Please enter your company name in capital letters (UPPERCASE)</p>
+
+    <form class="name-form" action="industry.html" method="get" onsubmit="saveCompanyName()">
+      <input type="text" name="company" id="companyNameInput" placeholder="Enter your company name" required>
+      <button type="submit">Create Logo</button>
+    </form>
+
+    <div class="ai-statement">
+      ⚡ Powered by smart design logic, color psychology & industry intelligence.
+    </div>
+  </section>
+
+  <footer>
+    <p>Trusted by digital creators, designers, and entrepreneurs.</p>
+  </footer>
+
+  <script>
+    function saveCompanyName() {
+      const name = document.getElementById("companyNameInput").value;
+      localStorage.setItem("companyName", name);
+    }
+  </script>
+</body>
+</html>

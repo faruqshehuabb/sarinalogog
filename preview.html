@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Preview Logo – Sarina Creatives</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      color: #1f2937;
+    }
+
+    header {
+      background: #ffffff;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #4f46e5;
+    }
+
+    .toolbar {
+      background: #ffffff;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem 2rem;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .toolbar > div {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.9rem;
+    }
+
+    .toolbar label {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .toolbar input[type="color"],
+    .toolbar input[type="text"] {
+      padding: 0.6rem;
+      font-size: 0.95rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+    }
+
+    .toolbar button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.95rem;
+      margin-top: 1.3rem;
+    }
+
+    .toolbar button:hover {
+      background: #4338ca;
+    }
+
+    .preview-area {
+      background: #ffffff;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 12px;
+      border: 2px dashed #e2e8f0;
+      text-align: center;
+    }
+
+    .preview-area svg {
+      max-width: 900%;
+      height: auto;
+    }
+
+    @media (max-width: 768px) {
+      .toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .toolbar > div,
+      .toolbar button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>Sarina Creatives – Logo Preview</header>
+
+  <div class="toolbar">
+    <div>
+      <label for="colorPicker">🎨 Logo Color</label>
+      <input type="color" id="colorPicker" value="#4f46e5" />
+    </div>
+    <div>
+      <label for="taglineInput">✍️ Tagline</label>
+      <input type="text" id="taglineInput" placeholder="Your tagline here..." />
+    </div>
+    <div>
+      <label for="bgColorPicker">🌈 Background</label>
+      <input type="color" id="bgColorPicker" value="#ffffff" />
+    </div>
+    <button onclick="downloadAsJPEG()">⬇️ Download JPEG</button>
+  </div>
+
+  <div class="preview-area" id="logoPreview">
+    Loading logo...
+  </div>
+
+  <script>
+    const logoPath = localStorage.getItem("selectedLogo");
+    const companyName = localStorage.getItem("companyName") || "YOUR BRAND";
+    const companyTagline = localStorage.getItem("companyTagline") || "LOGO TEMPLATE";
+
+    const previewDiv = document.getElementById("logoPreview");
+    const colorPicker = document.getElementById("colorPicker");
+    const taglineInput = document.getElementById("taglineInput");
+    const bgColorPicker = document.getElementById("bgColorPicker");
+
+    fetch(logoPath)
+      .then(res => res.text())
+      .then(svg => {
+        svg = svg.replace(/TECHNOLOGY/g, companyName);
+        svg = svg.replace(/LOGO TEMPLATE/g, companyTagline);
+        previewDiv.innerHTML = svg;
+        updateColor(colorPicker.value);
+        updateBackgroundColor(bgColorPicker.value);
+      })
+      .catch(() => {
+        previewDiv.innerHTML = "<p style='color:red;'>❌ Failed to load logo. Check the path.</p>";
+      });
+
+    function updateColor(color) {
+      const svg = previewDiv.querySelector("svg");
+      if (svg) {
+        svg.querySelectorAll("path, polygon, circle, text, rect, line").forEach(el => {
+          if (el.getAttribute("fill") && el.getAttribute("fill") !== "none") {
+            el.setAttribute("fill", color);
+          }
+        });
+      }
+    }
+
+    function updateBackgroundColor(color) {
+      previewDiv.style.backgroundColor = color;
+    }
+
+    colorPicker.addEventListener("input", e => updateColor(e.target.value));
+    bgColorPicker.addEventListener("input", e => updateBackgroundColor(e.target.value));
+
+    taglineInput.addEventListener("input", e => {
+      const svgText = previewDiv.querySelectorAll("text");
+      if (svgText.length >= 2) {
+        svgText[1].textContent = e.target.value;
+        localStorage.setItem("companyTagline", e.target.value);
+      }
+    });
+
+    function downloadAsJPEG() {
+      const svg = previewDiv.querySelector("svg");
+      if (!svg) return alert("SVG not loaded.");
+
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const viewBox = svg.getAttribute("viewBox");
+      const [minX, minY, width, height] = viewBox ? viewBox.split(" ").map(Number) : [0, 0, 600, 600];
+
+      const scaleFactor = 3;
+      const canvas = document.createElement("canvas");
+      canvas.width = width * scaleFactor;
+      canvas.height = height * scaleFactor;
+
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+      img.onload = function () {
+        ctx.fillStyle = bgColorPicker.value;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const jpeg = canvas.toDataURL("image/jpeg", 1.0);
+        const a = document.createElement("a");
+        a.href = jpeg;
+        a.download = "sarina-logo.jpg";
+        a.click();
+      };
+      img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
+    }
+  </script>
+
+</body>
+</html>
